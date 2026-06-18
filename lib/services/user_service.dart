@@ -19,4 +19,21 @@ class UserService {
       return null;
     }
   }
+
+  Future<bool> isAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isAdmin') ?? false;
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    try {
+      final db = await MongoDatabase.db;
+      final collection = db.collection('users');
+      final users = await collection.find().toList();
+      return users;
+    } catch (e) {
+      print('Error fetching users: $e');
+      return [];
+    }
+  }
 }

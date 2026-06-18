@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/weather_service.dart';
+import 'admin_screen.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,15 +21,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _weatherData;
   bool _isLoading = true;
   bool _isSearching = false;
+  bool _isAdmin = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchInitialWeather();
+    _fetchInitialData();
   }
 
-  Future<void> _fetchInitialWeather() async {
+  Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
+    
+    // Check if user is admin
+    final isAdmin = await _userService.isAdmin();
+    setState(() => _isAdmin = isAdmin);
     
     // Fetch the user's default city from MongoDB
     final String? userCity = await _userService.getUserLocation();
@@ -88,6 +94,16 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          if (_isAdmin)
+            IconButton(
+              icon: const Icon(Icons.admin_panel_settings, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminScreen()),
+                );
+              },
+            ),
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () => _logout(context),

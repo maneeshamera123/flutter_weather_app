@@ -22,10 +22,11 @@ class AuthService {
         // Retrieve the static app-level auth token from .env
         final String appAuthToken = dotenv.env['AUTH_TOKEN'] ?? '';
         
-        // Save the user's email AND the app-level auth token to SharedPreferences
+        // Save the user's email, the app-level auth token, and admin status to SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('userEmail', email);
         await prefs.setString('authToken', appAuthToken);
+        await prefs.setBool('isAdmin', user['is_admin'] == true);
         
         // Return success
         return {'success': true};
@@ -57,6 +58,7 @@ class AuthService {
         'location': location,
         'date': DateTime.now().toIso8601String(),
         'lastNotificationSent': null,
+        'is_admin': false,
       });
 
       return {'success': true};
@@ -69,6 +71,7 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userEmail');
     await prefs.remove('authToken');
+    await prefs.remove('isAdmin');
   }
 
   Future<bool> isLoggedIn() async {
