@@ -71,23 +71,6 @@ class AuthService {
     await prefs.remove('authToken');
   }
 
-  Future<String?> getUserLocation() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final email = prefs.getString('userEmail');
-      
-      if (email == null) return null;
-
-      final db = await MongoDatabase.db;
-      final collection = db.collection('users');
-      final user = await collection.findOne(where.eq('email', email));
-      
-      return user?['location'] as String?;
-    } catch (e) {
-      return null;
-    }
-  }
-
   Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey('userEmail');

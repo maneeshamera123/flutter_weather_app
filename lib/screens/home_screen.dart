@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../services/user_service.dart';
 import '../services/weather_service.dart';
 import 'login_screen.dart';
 
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final WeatherService _weatherService = WeatherService();
   final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   final TextEditingController _searchController = TextEditingController();
   
   Map<String, dynamic>? _weatherData;
@@ -29,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = true);
     
     // Fetch the user's default city from MongoDB
-    final String? userCity = await _authService.getUserLocation();
+    final String? userCity = await _userService.getUserLocation();
     
     if (userCity != null && userCity.isNotEmpty) {
       final data = await _weatherService.getWeather(userCity);
