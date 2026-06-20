@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../services/notification_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart'; // We will create a placeholder for this
 
@@ -35,6 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result['success']) {
       if (mounted) {
+        // Initialize push notifications again after login so the token is saved to the database
+        // with the newly stored userEmail in SharedPreferences.
+        NotificationService().initPushNotifications();
+        
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),

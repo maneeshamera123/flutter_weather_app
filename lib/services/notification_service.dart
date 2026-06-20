@@ -79,6 +79,10 @@ class NotificationService {
 
       authClient.close();
       
+      if (response.statusCode != 200) {
+        print('FCM Error Response: ${response.body}');
+      }
+      
       return response.statusCode == 200;
     } catch (e) {
       print('Error sending notification: $e');
